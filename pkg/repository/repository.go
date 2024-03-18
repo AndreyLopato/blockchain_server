@@ -34,7 +34,11 @@ func (repo *Repository) Get(height int) (error, string) {
 	var result bson.M
 	err := bcColl.FindOne(context.TODO(), bson.D{{"height", height}}).Decode(&result)
 	if err != nil {
-		return err, ""
+		if err != mongo.ErrNoDocuments {
+			return err, ""
+		} else {
+			return nil, ""
+		}
 	}
 
 	jsonData, err := json.MarshalIndent(result, "", "    ")

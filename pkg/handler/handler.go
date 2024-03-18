@@ -28,12 +28,12 @@ func (h *Handler) getBlockchainHandler(c *gin.Context) {
 	}
 	//fmt.Printf("height: %d\n", height)
 
-	err := h.service.PerformWcReq(height)
+	err, bc := h.service.PerformWcReq(height)
 	if err != nil {
 		c.String(http.StatusNotFound, "")
 		fmt.Println(err)
 		return
 	}
 
-	c.String(http.StatusOK, "")
+	c.String(http.StatusOK, bc)
 }
