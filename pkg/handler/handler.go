@@ -3,16 +3,19 @@ package handler
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"main/pkg/service"
 	"net/http"
 )
 
 type Handler struct {
-	service *service.Service
+	SrvIf serviceInterface
 }
 
-func NewHandler(service *service.Service) *Handler {
-	return &Handler{service: service}
+type serviceInterface interface {
+	PerformWcReq(height int) (error, string)
+}
+
+func NewHandler(srv serviceInterface) *Handler {
+	return &Handler{srv}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
@@ -28,7 +31,7 @@ func (h *Handler) getBlockchainHandler(c *gin.Context) {
 	}
 	//fmt.Printf("height: %d\n", height)
 
-	err, bc := h.service.PerformWcReq(height)
+	err, bc := h.SrvIf.PerformWcReq(height)
 	if err != nil {
 		c.String(http.StatusNotFound, "")
 		fmt.Println(err)

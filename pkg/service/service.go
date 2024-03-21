@@ -3,17 +3,21 @@ package service
 import (
 	"fmt"
 	"io"
-	"main/pkg/repository"
 	"net/http"
 	"strconv"
 )
 
 type Service struct {
-	repo *repository.Repository
+	RepoIf repoInterface
 }
 
-func NewService(repo *repository.Repository) *Service {
-	return &Service{repo: repo}
+func NewService(repo repoInterface) *Service {
+	return &Service{RepoIf: repo}
+}
+
+type repoInterface interface {
+	Set(height int, blockchain string) error
+	Get(height int) (error, string)
 }
 
 func (srv *Service) PerformWcReq(height int) (error, string) {
@@ -29,12 +33,15 @@ func (srv *Service) PerformWcReq(height int) (error, string) {
 		return err, ""
 	}
 
-	err, bdData := srv.repo.Get(height)
+	err, bdData := srv.RepoIf.Get(height)
 	if err != nil {
 		return err, ""
 	}
 	if bdData == "" {
-		srv.repo.Set(height, string(body))
+		err := srv.RepoIf.Set(height, string(body))
+		if err != nil {
+			return err, ""
+		}
 	} else {
 		fmt.Printf("bc with height %d already exists\n", height)
 	}

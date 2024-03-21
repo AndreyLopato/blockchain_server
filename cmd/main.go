@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo"
 	"main/pkg/handler"
 	"main/pkg/repository"
 	"main/pkg/service"
@@ -14,8 +13,6 @@ import (
 
 //mongodb+srv://lopatoandrey:Password@cluster0.efs83oj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 //mongodb+srv://lopatoandrey:<password>@cluster0.efs83oj.mongodb.net/
-
-var db *mongo.Client
 
 func main() {
 	uri := "mongodb+srv://lopatoandrey:Password@cluster0.efs83oj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
